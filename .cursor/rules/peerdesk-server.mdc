@@ -1,0 +1,12 @@
+---
+description: PeerDesk Ubuntu server — point at locked stack
+globs: server/**
+---
+
+# Server
+
+Follow [DECISIONS.md](../brain/DECISIONS.md) and [CODEMAP.md](../brain/CODEMAP.md).
+
+- Owns credentials, session occupancy (one viewer), capture, encode, inject.
+- Wayland: fail clearly unless `--synthetic`.
+- Do not invent relay, multi-monitor, or extra CRUD.

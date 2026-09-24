@@ -1,0 +1,34 @@
+---
+description: Generic stack contracts after architecture lock; no fake CRUD
+alwaysApply: true
+---
+
+# Stack contracts
+
+## While architecture unlocked
+If `.cursor/brain/DECISIONS.md` architecture is not human-locked, do not invent
+a stack here. A **proposal** may already live in DECISIONS §Architecture
+(native C++ peer desktop). Follow that proposal only after the human locks it;
+until then, no feature scaffolding of capture/protocol/UI.
+
+## After architecture lock
+Follow the locked Client / API / Data / Auth / Sync choices in DECISIONS.md.
+Do not silently diverge in code without updating DECISIONS.
+
+## Persistence
+- Never silently fall back from real persistence (DB/files) to in-memory fakes
+  on production paths.
+- Empty queries → empty results; infra failures → explicit errors (not fake data).
+
+## Disabled / deferred features
+- Status or upgrade UI only — **no invented business CRUD** for features that
+  are out of scope, unpaid, or not yet `build-ready`.
+
+## Module ownership
+- Respect CODEMAP and DECISIONS §Boundaries when they exist.
+- Prefer one module directory → one PR when possible.
+
+## Growing rules
+When `frontend/`, `backend/`, or equivalent folders exist, add thin glob-scoped
+`.cursor/rules/*.mdc` files that **point at** brain DECISIONS/CODEMAP — do not
+paste another product’s stack rules verbatim.

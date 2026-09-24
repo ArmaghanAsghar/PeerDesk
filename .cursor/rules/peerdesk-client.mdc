@@ -1,0 +1,12 @@
+---
+description: PeerDesk Qt client — point at locked stack
+globs: client/**
+---
+
+# Client
+
+Follow [DECISIONS.md](../brain/DECISIONS.md) and [CODEMAP.md](../brain/CODEMAP.md).
+
+- Owns connection form, decode, paint, widget-scoped input, coordinate mapping.
+- Do not add saved profiles (J4), file transfer, clipboard, or audio.
+- TLS and wire types come from `shared/`, not a second protocol.

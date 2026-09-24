@@ -1,0 +1,28 @@
+---
+description: Agent plans and architecture proposals must lead with Mermaid
+alwaysApply: true
+---
+
+# Mermaid-first plans
+
+Every agent **plan / architecture / multi-step proposal** must lead with **1–3 Mermaid
+diagrams**, then short actionable bullets.
+
+## Type by intent
+- `flowchart` — modules, phases, ownership, import boundaries, packaging
+- `sequenceDiagram` — request lifecycle, auth, discovery, cross-module contracts
+- `stateDiagram` / `stateDiagram-v2` — user or entity status
+- `flowchart LR` — CODEMAP current → target path renames
+
+## Syntax
+- No spaces in node IDs; use camelCase or underscores
+- Quote labels that contain special characters (parentheses, commas, colons)
+- Prefer subgraphs with explicit IDs: `subgraph id [Label]`
+
+## Where diagrams live
+- Product memory diagrams: `.cursor/brain/` first (see brain README)
+- Team summaries: `docs/` stay thin; link to brain; mirror only high-leverage contracts
+- Do not duplicate long prose across brain and docs
+
+## Skip Mermaid when
+- Pure one-file bugfix or typo with no flow / ownership / architecture impact
