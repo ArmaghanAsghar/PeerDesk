@@ -1,0 +1,67 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": { "major": 3, "minor": 25, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Unix Makefiles",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "debug",
+      "displayName": "Debug",
+      "description": "Debug build in build/ (binaries at build/peerdesk-*)",
+      "inherits": "base",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+    },
+    {
+      "name": "release",
+      "displayName": "Release",
+      "description": "Optimized build in build-release/",
+      "inherits": "base",
+      "binaryDir": "${sourceDir}/build-release",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+    }
+  ],
+  "buildPresets": [
+    { "name": "debug-all", "displayName": "Debug: all targets", "configurePreset": "debug" },
+    { "name": "debug-server", "displayName": "Debug: peerdesk-server", "configurePreset": "debug", "targets": ["peerdesk-server"] },
+    { "name": "debug-client", "displayName": "Debug: peerdesk-client", "configurePreset": "debug", "targets": ["peerdesk-client"] },
+    { "name": "debug-smoke", "displayName": "Debug: peerdesk-smoke", "configurePreset": "debug", "targets": ["peerdesk-smoke"] },
+    { "name": "debug-client-test", "displayName": "Debug: peerdesk-client-test", "configurePreset": "debug", "targets": ["peerdesk-client-test"] },
+    { "name": "debug-shared", "displayName": "Debug: peerdesk_shared (lib)", "configurePreset": "debug", "targets": ["peerdesk_shared"] },
+    { "name": "debug-host", "displayName": "Debug: peerdesk_host (lib)", "configurePreset": "debug", "targets": ["peerdesk_host"] },
+    { "name": "release-all", "displayName": "Release: all targets", "configurePreset": "release" },
+    { "name": "release-server", "displayName": "Release: peerdesk-server", "configurePreset": "release", "targets": ["peerdesk-server"] },
+    { "name": "release-client", "displayName": "Release: peerdesk-client", "configurePreset": "release", "targets": ["peerdesk-client"] }
+  ],
+  "testPresets": [
+    {
+      "name": "debug",
+      "displayName": "Debug: all tests",
+      "configurePreset": "debug",
+      "output": { "outputOnFailure": true }
+    },
+    {
+      "name": "release",
+      "displayName": "Release: all tests",
+      "configurePreset": "release",
+      "output": { "outputOnFailure": true }
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "debug",
+      "displayName": "Debug: configure, build, test",
+      "steps": [
+        { "type": "configure", "name": "debug" },
+        { "type": "build", "name": "debug-all" },
+        { "type": "test", "name": "debug" }
+      ]
+    }
+  ]
+}
