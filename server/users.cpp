@@ -9,6 +9,7 @@
 namespace peerdesk {
 namespace {
 
+// Encode bytes as lowercase hex, two characters per byte.
 std::string to_hex(std::span<const uint8_t> b) {
     std::ostringstream o;
     o << std::hex << std::setfill('0');
@@ -16,6 +17,7 @@ std::string to_hex(std::span<const uint8_t> b) {
     return o.str();
 }
 
+// Decode hex `s` into `out`. Fails unless `s` is exactly 2 * out.size() valid hex digits.
 bool from_hex(const std::string& s, std::span<uint8_t> out) {
     if (s.size() != out.size() * 2) return false;
     for (size_t i = 0; i < out.size(); ++i) {

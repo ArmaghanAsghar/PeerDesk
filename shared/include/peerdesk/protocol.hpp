@@ -39,6 +39,7 @@ enum class AuthFailReason : uint8_t {
 
 enum class MouseAction : uint8_t { Move = 1, Down = 2, Up = 3, Wheel = 4 };
 
+// User-facing message for an auth failure reason.
 inline const char* auth_fail_text(AuthFailReason r) {
     switch (r) {
         case AuthFailReason::BadCredentials:
@@ -92,30 +93,43 @@ struct VideoMeta {
     std::vector<uint8_t> jpeg;
 };
 
+// Message payload codecs. pack_* serialises a message body (big-endian, no
+// frame header; TlsConn adds that). unpack_* returns nullopt if the payload is
+// too short or malformed; trailing bytes are ignored.
+
+// "PDSK" magic, u16 version, username NUL-padded/truncated to kUsernameBytes.
 std::vector<uint8_t> pack_hello(const Hello& h);
 std::optional<Hello> unpack_hello(std::span<const uint8_t> p);
 
+// 16-byte salt, 32-byte nonce, then u32 t_cost, m_cost, parallelism.
 std::vector<uint8_t> pack_challenge(const AuthChallenge& c);
 std::optional<AuthChallenge> unpack_challenge(std::span<const uint8_t> p);
 
+// 32-byte HMAC.
 std::vector<uint8_t> pack_auth_response(const AuthResponse& r);
 std::optional<AuthResponse> unpack_auth_response(std::span<const uint8_t> p);
 
+// u16 host width, u16 host height.
 std::vector<uint8_t> pack_auth_ok(const AuthOk& o);
 std::optional<AuthOk> unpack_auth_ok(std::span<const uint8_t> p);
 
+// One reason byte. The value is not range-checked on unpack.
 std::vector<uint8_t> pack_auth_fail(AuthFailReason r);
 std::optional<AuthFailReason> unpack_auth_fail(std::span<const uint8_t> p);
 
+// u8 action, u8 button, u16 x, u16 y, i16 wheel delta (host pixels).
 std::vector<uint8_t> pack_mouse(const MouseEvent& e);
 std::optional<MouseEvent> unpack_mouse(std::span<const uint8_t> p);
 
+// u8 down flag, u32 X11 keysym.
 std::vector<uint8_t> pack_key(const KeyEvent& e);
 std::optional<KeyEvent> unpack_key(std::span<const uint8_t> p);
 
+// u16 width, u16 height, then the JPEG bytes to the end of the payload.
 std::vector<uint8_t> pack_video(uint16_t w, uint16_t h, std::span<const uint8_t> jpeg);
 std::optional<VideoMeta> unpack_video(std::span<const uint8_t> p);
 
+// Raw message text with no length prefix. unpack never fails.
 std::vector<uint8_t> pack_error(const std::string& msg);
 std::optional<std::string> unpack_error(std::span<const uint8_t> p);
 

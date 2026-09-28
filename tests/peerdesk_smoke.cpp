@@ -18,6 +18,7 @@ namespace {
 
 int g_fails = 0;
 
+// Print "ok"/"FAIL" for `msg` and count failures in g_fails (non-fatal assert).
 void expect(bool cond, const char* msg) {
     if (!cond) {
         std::cerr << "FAIL: " << msg << "\n";
@@ -87,6 +88,9 @@ void test_jpeg() {
     expect(peerdesk::decode_jpeg_rgb(jpeg, out, ow, oh) && ow == w && oh == h, "jpeg decode");
 }
 
+// Run the client side of the handshake as `user`/`pass`. Leaves the host's
+// final reply (AuthOk or AuthFail) in `t`/`payload`. Returns false on any transport
+// or protocol failure before that reply.
 bool client_hello_auth(peerdesk::TlsConn& c, const std::string& user, const std::string& pass,
                        peerdesk::MsgType& t, std::vector<uint8_t>& payload) {
     peerdesk::Hello h{peerdesk::kProtocolVersion, user};

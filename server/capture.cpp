@@ -98,6 +98,7 @@ void SyntheticCapture::note_input(const std::string& line) {
 
 namespace {
 
+// Set one pixel in a packed RGB buffer of size w x h. Out-of-bounds writes are ignored.
 void put_pixel(std::vector<uint8_t>& rgb, int w, int h, int x, int y, uint8_t r, uint8_t g,
                uint8_t b) {
     if (x < 0 || y < 0 || x >= w || y >= h) return;
@@ -107,6 +108,7 @@ void put_pixel(std::vector<uint8_t>& rgb, int w, int h, int x, int y, uint8_t r,
     rgb[i + 2] = b;
 }
 
+// Fill an rw x rh rectangle at (x, y), clipped to the buffer.
 void fill_rect(std::vector<uint8_t>& rgb, int w, int h, int x, int y, int rw, int rh, uint8_t r,
                uint8_t g, uint8_t b) {
     for (int yy = y; yy < y + rh; ++yy) {
@@ -114,7 +116,9 @@ void fill_rect(std::vector<uint8_t>& rgb, int w, int h, int x, int y, int rw, in
     }
 }
 
-// Tiny 5x7 glyph font for ASCII 32-126 (subset: digits, letters, punctuation we need).
+// Draw `s` with its top-left at (x, y) using a built-in 5x7 font scaled 2x
+// (12 px advance per character). Digits, ": - . space" and most uppercase
+// letters have glyphs. Any other character draws as a generic block glyph.
 void draw_text(std::vector<uint8_t>& rgb, int w, int h, int x, int y, const std::string& s,
                uint8_t r, uint8_t g, uint8_t b) {
     // Scale-up pixel font using a simple 8x8 pattern from the character code.

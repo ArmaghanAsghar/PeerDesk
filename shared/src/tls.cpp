@@ -19,11 +19,13 @@
 namespace peerdesk {
 namespace {
 
+// Mark `fd` close-on-exec so child processes (e.g. the openssl CLI) don't inherit it.
 void set_cloexec(int fd) {
     const int flags = fcntl(fd, F_GETFD, 0);
     if (flags >= 0) fcntl(fd, F_SETFD, flags | FD_CLOEXEC);
 }
 
+// Poll `fd` for readability (or writability if `write`). Returns false on timeout or error.
 bool wait_fd(int fd, int timeout_ms, bool write) {
     pollfd p{};
     p.fd = fd;
@@ -32,6 +34,8 @@ bool wait_fd(int fd, int timeout_ms, bool write) {
     return rc > 0 && (p.revents & (write ? POLLOUT : POLLIN));
 }
 
+// Create a TLS 1.2+ server context loaded with the PEM `cert` and `key`.
+// Returns null with `err` set on failure.
 SSL_CTX* new_server_ctx(const std::filesystem::path& cert, const std::filesystem::path& key,
                         std::string& err) {
     SSL_CTX* ctx = SSL_CTX_new(TLS_server_method());
@@ -50,6 +54,7 @@ SSL_CTX* new_server_ctx(const std::filesystem::path& cert, const std::filesystem
     return ctx;
 }
 
+// Create a TLS 1.2+ client context that skips certificate verification.
 SSL_CTX* new_client_ctx() {
     SSL_CTX* ctx = SSL_CTX_new(TLS_client_method());
     if (!ctx) return nullptr;

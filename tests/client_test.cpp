@@ -81,6 +81,7 @@ struct WorkerRig {
     }
 };
 
+// Deliver a synthetic mouse event of `type` at widget-local `pos` directly to `w`.
 void sendMouse(QWidget* w, QEvent::Type type, QPoint pos, Qt::MouseButton button) {
     QMouseEvent ev(type, QPointF(pos), QPointF(w->mapToGlobal(pos)), button,
                    type == QEvent::MouseButtonRelease ? Qt::NoButton : Qt::MouseButtons(button),
@@ -88,6 +89,7 @@ void sendMouse(QWidget* w, QEvent::Type type, QPoint pos, Qt::MouseButton button
     QCoreApplication::sendEvent(w, &ev);
 }
 
+// First descendant of `root` of type T whose text() equals `text`, or null.
 template <typename T>
 T* findByText(QWidget* root, const QString& text) {
     for (auto* c : root->findChildren<T*>()) {
@@ -96,6 +98,7 @@ T* findByText(QWidget* root, const QString& text) {
     return nullptr;
 }
 
+// First QLineEdit under `root` with the given placeholder text, or null.
 QLineEdit* findField(QWidget* root, const QString& placeholder) {
     for (auto* e : root->findChildren<QLineEdit*>()) {
         if (e->placeholderText() == placeholder) return e;

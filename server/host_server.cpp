@@ -13,6 +13,7 @@
 namespace peerdesk {
 namespace {
 
+// Short description of a mouse event, e.g. "DOWN 640,360", for ScreenSource::note_input.
 std::string mouse_line(const MouseEvent& e) {
     std::string a = "MOVE";
     if (e.action == MouseAction::Down) a = "DOWN";

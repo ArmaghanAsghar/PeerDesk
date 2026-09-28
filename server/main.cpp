@@ -5,16 +5,17 @@
 
 namespace {
 peerdesk::HostServer* g_server = nullptr;
+
+// SIGINT/SIGTERM handler: ask the running server to shut down cleanly.
 void on_sig(int) {
     if (g_server) g_server->request_stop();
 }
 }  // namespace
 
+// peerdesk-server entry point: parse flags (see --help), set up the host, and
+// serve until a stop signal. Exit codes: 0 = clean stop, 1 = setup failed, 2 = bad flags.
 int main(int argc, char** argv) {
-
-    
     peerdesk::HostServer::Config cfg;
-
 
     for (int i = 1; i < argc; ++i) {
         const std::string a = argv[i];

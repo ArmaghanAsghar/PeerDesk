@@ -10,11 +10,14 @@
 namespace peerdesk {
 namespace {
 
+// libjpeg error manager extended with a jump target, so errors unwind to the caller.
 struct JpegErr {
     jpeg_error_mgr pub{};
     jmp_buf jump{};
 };
 
+// libjpeg fatal-error hook. It longjmps back to the setjmp in the encode/decode
+// function instead of calling exit().
 void jpeg_error_exit(j_common_ptr cinfo) {
     auto* err = reinterpret_cast<JpegErr*>(cinfo->err);
     longjmp(err->jump, 1);
